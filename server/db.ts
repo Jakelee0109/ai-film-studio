@@ -11,7 +11,8 @@ import {
   audios, InsertAudio,
   posters, InsertPoster,
   supportTickets, InsertSupportTicket,
-  creditTransactions, InsertCreditTransaction
+  creditTransactions, InsertCreditTransaction,
+  projectTemplates, InsertProjectTemplate
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -338,4 +339,65 @@ export async function getUserTransactions(userId: number) {
   if (!db) return [];
   
   return await db.select().from(creditTransactions).where(eq(creditTransactions.userId, userId)).orderBy(desc(creditTransactions.createdAt));
+}
+
+
+export async function getProjectTemplates() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get templates: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(projectTemplates).where(eq(projectTemplates.isActive, true));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get templates:", error);
+    throw error;
+  }
+}
+
+export async function getProjectTemplateBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get template: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.select().from(projectTemplates).where(eq(projectTemplates.slug, slug)).limit(1);
+    return result.length > 0 ? result[0] : undefined;
+  } catch (error) {
+    console.error("[Database] Failed to get template:", error);
+    throw error;
+  }
+}
+
+export async function createProjectFromTemplate(userId: number, templateId: number, projectTitle: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create project: database not available");
+    return undefined;
+  }
+
+  try {
+    const template = await db.select().from(projectTemplates).where(eq(projectTemplates.id, templateId)).limit(1);
+    if (template.length === 0) {
+      throw new Error("Template not found");
+    }
+
+    const result = await db.insert(projects).values({
+      userId,
+      title: projectTitle,
+      description: template[0].description,
+      status: "draft",
+      coverImage: template[0].thumbnailUrl,
+    });
+
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to create project from template:", error);
+    throw error;
+  }
 }

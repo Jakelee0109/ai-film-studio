@@ -192,3 +192,24 @@ export const creditTransactions = mysqlTable("creditTransactions", {
 
 export type CreditTransaction = typeof creditTransactions.$inferSelect;
 export type InsertCreditTransaction = typeof creditTransactions.$inferInsert;
+
+
+/**
+ * Project Templates - 项目模板
+ */
+export const projectTemplates = mysqlTable("projectTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(), // 模板名称
+  slug: varchar("slug", { length: 100 }).notNull().unique(), // URL友好的标识符
+  description: text("description"), // 模板描述
+  category: varchar("category", { length: 100 }).notNull(), // 分类: 悬疑、科幻等
+  thumbnailUrl: text("thumbnailUrl"), // 缩略图 S3 URL
+  scriptTemplate: text("scriptTemplate"), // 初始剧本模板
+  settingsTemplate: text("settingsTemplate"), // JSON格式的初始设置
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ProjectTemplate = typeof projectTemplates.$inferSelect;
+export type InsertProjectTemplate = typeof projectTemplates.$inferInsert;

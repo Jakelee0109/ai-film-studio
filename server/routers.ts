@@ -13,7 +13,8 @@ import {
   createAudio, getProjectAudios,
   createPoster, getProjectPosters,
   createSupportTicket, getUserTickets, getAllTickets, updateTicketStatus,
-  createCreditTransaction, getUserTransactions
+  createCreditTransaction, getUserTransactions,
+  getProjectTemplates, getProjectTemplateBySlug, createProjectFromTemplate
 } from "./db";
 import { invokeLLM } from "./_core/llm";
 import { generateImage } from "./_core/imageGeneration";
@@ -76,6 +77,24 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         await deleteProject(input.id);
+        return { success: true };
+      }),
+
+    templates: publicProcedure.query(async () => {
+      return await getProjectTemplates();
+    }),
+
+    createFromTemplate: protectedProcedure
+      .input(z.object({
+        templateSlug: z.string(),
+        projectTitle: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const template = await getProjectTemplateBySlug(input.templateSlug);
+        if (!template) {
+          throw new Error("Template not found");
+        }
+        await createProjectFromTemplate(ctx.user.id, template.id, input.projectTitle);
         return { success: true };
       }),
   }),

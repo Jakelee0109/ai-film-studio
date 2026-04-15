@@ -22,13 +22,6 @@
       "when": 1763700333561,
       "tag": "0002_kind_moon_knight",
       "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1763700626272,
-      "tag": "0003_wise_gauntlet",
-      "breakpoints": true
     }
   ]
 }
