@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "framework": "vite",
+  "env": {
+    "DATABASE_URL": {
+      "description": "MySQL数据库连接字符串"
+    },
+    "JWT_SECRET": {
+      "description": "JWT签名密钥"
+    },
+    "VITE_APP_ID": {
+      "description": "Manus OAuth应用ID"
+    },
+    "OAUTH_SERVER_URL": {
+      "description": "Manus OAuth服务器地址"
+    },
+    "VITE_OAUTH_PORTAL_URL": {
+      "description": "Manus OAuth门户地址"
+    },
+    "OWNER_OPEN_ID": {
+      "description": "项目所有者的OpenID"
+    },
+    "OWNER_NAME": {
+      "description": "项目所有者名称"
+    },
+    "VITE_APP_TITLE": {
+      "description": "应用标题",
+      "value": "AI Film Studio 寻山纪 AI电影制作平台"
+    },
+    "VITE_APP_LOGO": {
+      "description": "应用logo URL"
+    },
+    "BUILT_IN_FORGE_API_URL": {
+      "description": "Manus内置API地址"
+    },
+    "BUILT_IN_FORGE_API_KEY": {
+      "description": "Manus内置API密钥"
+    },
+    "VITE_FRONTEND_FORGE_API_KEY": {
+      "description": "前端Forge API密钥"
+    },
+    "VITE_FRONTEND_FORGE_API_URL": {
+      "description": "前端Forge API地址"
+    },
+    "VITE_ANALYTICS_ENDPOINT": {
+      "description": "分析端点"
+    },
+    "VITE_ANALYTICS_WEBSITE_ID": {
+      "description": "分析网站ID"
+    }
+  },
+  "buildOutputDirectory": "dist",
+  "functions": {
+    "server/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ]
+}
